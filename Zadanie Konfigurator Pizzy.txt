@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             Duza.check(R.id.radioGroupRozmiar);
         });
 
+        // Aktualizacja ceny po wybraniu spinner'a
         Spinner spinnerCiasto = findViewById(R.id.spinnerCiasto);
         spinnerCiasto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         });
         spinnerCiasto.setSelection(1);
 
+        // Pojawianie sie, znikanie Spinner'a
         CheckBox wlasneCiasto = findViewById(R.id.wlasneCiasto);
         wlasneCiasto.setOnClickListener(v -> {
             aktualizujCene();
@@ -414,3 +416,4 @@ strings.xml
     <item>Pełnoziarniste (+4.00 PLN)</item>
 
 </string-array>
+
