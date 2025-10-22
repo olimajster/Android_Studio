@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // CheckBox Zniżka studencka
         CheckBox znizka = findViewById(R.id.znizkaStudencka);
         RadioButton mala = findViewById(R.id.radioMala);
         RadioButton srednia = findViewById(R.id.radioSrednia);
@@ -411,4 +412,5 @@ strings.xml
     <item>Cienkie</item>
     <item>Grube (+2.00 PLN)</item>
     <item>Pełnoziarniste (+4.00 PLN)</item>
+
 </string-array>
