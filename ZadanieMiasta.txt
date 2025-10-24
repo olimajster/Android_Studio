@@ -1,0 +1,99 @@
+java: 
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    ArrayList<String> miasta;
+    ArrayAdapter<String> adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        Button przycisk = findViewById(R.id.przycisk);
+        Spinner spinnerMiasta = findViewById(R.id.spinnerMiasto);
+        EditText noweMiasto = findViewById(R.id.noweMiasto);
+
+        miasta = new ArrayList<>();
+        miasta.add("Łódź");
+        miasta.add("Kraków");
+        miasta.add("Poznań");
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, miasta);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMiasta.setAdapter(adapter);
+
+        przycisk.setOnClickListener(v -> {
+            String noweMiastoTekst = noweMiasto.getText().toString().trim();
+
+            if(!noweMiastoTekst.isEmpty()){
+                miasta.add(noweMiastoTekst);
+                adapter.notifyDataSetChanged();
+                noweMiasto.setText("");
+            }
+        });
+    }
+}
+
+xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/noweMiasto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="np. Rzeszów"/>
+
+    <Button
+        android:id="@+id/przycisk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dodaj"
+        android:onClick="Dodaj"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Podaj swoje miasto:"/>
+
+    <Spinner
+        android:id="@+id/spinnerMiasto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
