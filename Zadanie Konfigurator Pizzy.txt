@@ -1,5 +1,3 @@
-Zadanie Konfigurator Pizzy:
-
 java:
 
 import android.os.Bundle;
@@ -416,4 +414,5 @@ strings.xml
     <item>Pełnoziarniste (+4.00 PLN)</item>
 
 </string-array>
+
 
