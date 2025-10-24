@@ -1,0 +1,144 @@
+main xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/naglowekEkranu"
+        android:text="Panel logowania"
+        style="@style/NaglowekEkranu"/>
+
+    <Button
+        android:id="@+id/przycisk1"
+        android:text="Przycisk 1"
+        style="@style/PrzyciskGlowny"/>
+
+    <Button
+        android:id="@+id/przycisk2"
+        android:text="Przycisk 2"
+        style="@style/PrzyciskGlowny"/>
+
+    <Button
+        android:id="@+id/przycisk3"
+        android:text="Anuluj"
+        style="@style/PrzyciskGlowny.Anuluj"/>
+
+    <EditText
+        android:id="@+id/poleTekstowe"
+        android:hint="nie wiem co"
+        style="@style/PoleTekstowe"
+        />
+
+</LinearLayout>
+
+nowy plik obramowanie_edittext.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <stroke android:width="2dp" android:color="@color/PoleTekstowe"/>
+    <corners android:radius="8dp"/>
+</shape>
+
+themes.xml:
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.KonfiguratorPizzy" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+
+    <style name="PrzyciskGlowny">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:backgroundTint">@color/przycisk_niebieski</item>
+        <item name="android:textColor">@color/przycisk_tekst_bialy</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NaglowekEkranu">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">32dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/naglowekEkranu</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="PrzyciskGlowny.Anuluj">
+        <item name="android:backgroundTint">@color/przycisk_szary</item>
+    </style>
+
+    <style name="PoleTekstowe">
+        <item name="android:background">@drawable/obramowanie_edittext</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColorHint">#9DFF00</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+</resources>
+
+colors.xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="przycisk_niebieski">#0D47A1</color>
+    <color name="przycisk_tekst_bialy">#FFFFFF</color>
+    <!-- <color name="przycisk_czerwony">#E91E63</color> -->
+    <color name="naglowekEkranu">#00FFFF</color>
+    <color name="przycisk_szary">#808080</color>
+    <color name="PoleTekstowe">#FF0000</color>
+</resources>
+
+java:
+
+package com.example.konfiguratorpizzy;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+}
