@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
-//XML
+main xml:
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 </LinearLayout>
 
 
-//JAVA
+main java:
 
 package com.example.laboratoriummotyww;
 
@@ -212,9 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-
-
-//PODSTAWOWY THEME
+theme dla bialego ekranu:
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.LaboratoriumMotywów" parent="Theme.AppCompat.Light">
@@ -236,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
 </resources>
 
-//REDTHEME
+czerwone theme:
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
 
@@ -248,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
 </resources>
 
-//ANDROID MANIFEST
+android mainfest:
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -280,8 +278,7 @@ public class MainActivity extends AppCompatActivity {
 
 </manifest>
 
-
-//DARK THEME
+theme dla czarnego ekranu:
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.LaboratoriumMotywów" parent="Theme.AppCompat.Light">
@@ -293,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
     </style>
 </resources>
 
-//COLORS
+colors:
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="brand_primary">#0D47A1</color> <!-- Ciemnoniebieski -->
@@ -307,8 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
 </resources>
 
-
-//DRUGAXML
+drugi xml:
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -320,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-//DRUGAJAVA
+druga java:
 package com.example.laboratoriummotyww;
 
 import android.os.Bundle;
