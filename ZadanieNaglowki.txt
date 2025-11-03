@@ -10,9 +10,19 @@ main xml:
     android:gravity="center">
 
     <TextView
-        android:id="@+id/naglowekEkranu"
-        android:text="Panel logowania"
-        style="@style/NaglowekEkranu"/>
+        style="@style/NaglowekEkranu"
+        android:text="Panel Ustawień"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Włącz tryb PRO"
+        android:textSize="18sp"
+        style="@style/Switch"/>
+
+    <Button
+        style="@style/PrzyciskGlowny"
+        android:text="Zapisz ustawienia" />
 
     <Button
         android:id="@+id/przycisk1"
@@ -47,14 +57,7 @@ nowy plik obramowanie_edittext.xml:
 
 themes.xml:
 
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.KonfiguratorPizzy" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-    </style>
-
-    <style name="PrzyciskGlowny">
+<style name="PrzyciskGlowny">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">32dp</item>
@@ -86,11 +89,16 @@ themes.xml:
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16dp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColorHint">#9DFF00</item>
+        <item name="android:textColorHint">#FFFFFF</item>
         <item name="android:padding">10dp</item>
     </style>
 
-</resources>
+    <style name="Switch">
+        <!-- Kolor przełącznika -->
+        <item name="android:thumbTint">@color/primary_color</item>
+        <!-- Kolor tła -->
+        <item name="android:trackTint">@color/secondary_color</item>
+    </style>
 
 colors.xml:
 
@@ -101,12 +109,12 @@ colors.xml:
     <!-- <color name="przycisk_czerwony">#E91E63</color> -->
     <color name="naglowekEkranu">#00FFFF</color>
     <color name="przycisk_szary">#808080</color>
-    <color name="PoleTekstowe">#FF0000</color>
+    <color name="PoleTekstowe">#00FFFF</color>
+    <color name="primary_color">#00FF00</color>
+    <color name="secondary_color">#FF00FF</color>
 </resources>
 
 java:
-
-package com.example.konfiguratorpizzy;
 
 import android.os.Bundle;
 import android.view.View;
@@ -141,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
-
 }
 
 
@@ -341,3 +348,4 @@ public class DrugaActivity extends AppCompatActivity {
         });
     }
 }
+
