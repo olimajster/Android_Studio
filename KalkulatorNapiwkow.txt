@@ -1,4 +1,4 @@
-main.xml
+java:
 
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
@@ -43,6 +43,7 @@ strings.xml
 </resources>
 
 
-main.java
+java:
 
 PUSTE
+
