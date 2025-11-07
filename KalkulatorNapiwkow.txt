@@ -1,0 +1,48 @@
+main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Napiwki"/>
+
+    <Spinner
+        android:id="@+id/poziomyNapiwkow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/napiwki"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oblicz"/>
+
+</LinearLayout>
+
+
+strings.xml
+
+<resources>
+    <string name="app_name">geminDT</string>
+
+    <string-array name="napiwki">
+        <item>15%</item>
+        <item>20%</item>
+        <item>25%</item>
+
+    </string-array>
+</resources>
+
+
+main.java
+
+PUSTE
