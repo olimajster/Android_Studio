@@ -1,1 +1,116 @@
+//main java:
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        View mainLayout = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        przygotujDaneCytatow();
+
+        Button przycisk = findViewById(R.id.losuj);
+        TextView cytat = findViewById(R.id.tekstCytatu);
+        TextView autor = findViewById(R.id.tekstAutora);
+        int poprzedniIndeks = 0;
+        
+        przycisk.setOnClickListener(v -> {
+            if(!listaCytatow.isEmpty()){
+                int losowyIndeks = randomGenerator.nextInt(listaCytatow.size());
+
+                if(losowyIndeks != poprzedniIndeks){
+                    Cytat losowyCytat = listaCytatow.get(losowyIndeks);
+                    cytat.setText(losowyCytat.tresc);
+                    autor.setText(losowyCytat.autor);
+                    poprzedniIndeks = losowyIndeks;
+                }
+            }
+        });
+
+    }
+    private ArrayList<Cytat> listaCytatow = new ArrayList<>();
+    private Random randomGenerator = new Random();
+
+    private void przygotujDaneCytatow() {
+        // Tworzymy nowe obiekty klasy Cytat, używając naszego konstruktora
+        listaCytatow.add(new Cytat("Być albo nie być, oto jest pytanie.", "William Szekspir"));
+        listaCytatow.add(new Cytat("Wiem, że nic nie wiem.", "Sokrates"));
+        listaCytatow.add(new Cytat("Myślę, więc jestem.", "Kartezjusz"));
+        // ... dodaj co najmniej dwa inne cytaty
+    }
+}
+
+//cytat.java:
+
+package com.example.gemindt;
+
+public class Cytat {
+    // 1. Pola (atrybuty) - definiują, z czego składa się każdy cytat
+    String tresc;
+    String autor;
+
+    // 2. Konstruktor - "instrukcja montażu" dla nowego obiektu
+    //    Przyjmuje dwa argumenty i przypisuje je do pól.
+    public Cytat(String tresc, String autor) {
+        this.tresc = tresc;
+        this.autor = autor;
+    }
+}
+
+
+//xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/tekstCytatu"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/tekstAutora"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/losuj"
+        android:text="Losuj kolejny cytat"/>
+
+</LinearLayout>
 
