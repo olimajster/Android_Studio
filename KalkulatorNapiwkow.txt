@@ -1,0 +1,297 @@
+//xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="| KALKULATOR NAPIWKÓW |"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dark Mode"
+        android:id="@+id/switchToThemeMode"
+        android:onClick="zmienMotyw"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Wprowadź kwotę całkowitą rachunku..."
+        android:inputType="numberDecimal"
+        android:gravity="center"
+        android:id="@+id/poleKwotaCalkowita" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zaokrąglij w górę"
+        android:id="@+id/zaokraglijCheckBox"/>
+
+    <Spinner
+        android:id="@+id/procent_napiwku_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/procent_napiwku_spinner"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Wprowadź %%% napiwku..."
+        android:inputType="number"
+        android:gravity="center"
+        android:id="@+id/poleWlasnyNapiwek"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pokazWynikNapiwek"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pokazWynikCalk"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Ile osób płaci..."
+        android:inputType="number"
+        android:id="@+id/poleIloscOsob"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pokazZaplateNaOsobe"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+
+
+</LinearLayout>
+
+
+
+//java
+
+package com.example.kalkulator_napiwkow;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        View mainLayout = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        CheckBox zaokragliCheckBox = findViewById(R.id.zaokraglijCheckBox);
+        EditText poleKwotaCalkowita = findViewById(R.id.poleKwotaCalkowita);
+        Spinner spinnerProcent = findViewById(R.id.procent_napiwku_spinner);
+        EditText poleWlasnyNapiwek = findViewById(R.id.poleWlasnyNapiwek);
+        EditText ilosc_osob = findViewById(R.id.poleIloscOsob);
+        Switch switchTheme = findViewById(R.id.switchToThemeMode);
+
+        switchTheme.setOnClickListener(v -> zmienMotyw(v));
+
+        // 🔹 TextWatchery do automatycznego liczenia
+        poleKwotaCalkowita.addTextChangedListener(new SimpleTextWatcher());
+        poleWlasnyNapiwek.addTextChangedListener(new SimpleTextWatcher());
+        ilosc_osob.addTextChangedListener(new SimpleTextWatcher());
+
+        // 🔹 Listener spinnera
+        spinnerProcent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                obliczNapiwek();
+                if (position == 3) {
+                    poleWlasnyNapiwek.setVisibility(View.VISIBLE);
+                } else {
+                    poleWlasnyNapiwek.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        zaokragliCheckBox.setOnClickListener(v -> obliczNapiwek());
+    }
+
+    public void zmienMotyw(View view) {
+        Switch switch_theme = findViewById(R.id.switchToThemeMode);
+        View glownyLayout = findViewById(R.id.main);
+        EditText cena_calk = findViewById(R.id.poleKwotaCalkowita);
+        EditText wlasny_napiwek = findViewById(R.id.poleWlasnyNapiwek);
+        EditText ilosc_osob = findViewById(R.id.poleIloscOsob);
+        TextView pokazZaplateNaOsobe = findViewById(R.id.pokazZaplateNaOsobe);
+        TextView pokazWynikNapiwek = findViewById(R.id.pokazWynikNapiwek);
+        TextView pokazWynikCalk = findViewById(R.id.pokazWynikCalk);
+        CheckBox zaokragliCheckBox = findViewById(R.id.zaokraglijCheckBox);
+
+        if (switch_theme.isChecked()) {
+            glownyLayout.setBackgroundColor(Color.GRAY);
+            cena_calk.setTextColor(Color.WHITE);
+            wlasny_napiwek.setTextColor(Color.WHITE);
+            ilosc_osob.setTextColor(Color.WHITE);
+            pokazWynikCalk.setTextColor(Color.WHITE);
+            pokazZaplateNaOsobe.setTextColor(Color.WHITE);
+            pokazWynikNapiwek.setTextColor(Color.WHITE);
+            zaokragliCheckBox.setTextColor(Color.WHITE);
+
+        } else {
+            glownyLayout.setBackgroundColor(Color.WHITE);
+            cena_calk.setTextColor(Color.BLACK);
+            wlasny_napiwek.setTextColor(Color.BLACK);
+            ilosc_osob.setTextColor(Color.BLACK);
+            pokazWynikCalk.setTextColor(Color.BLACK);
+            pokazZaplateNaOsobe.setTextColor(Color.BLACK);
+            pokazWynikNapiwek.setTextColor(Color.BLACK);
+            zaokragliCheckBox.setTextColor(Color.BLACK);
+        }
+    }
+
+    public void obliczNapiwek() {
+        EditText cena_calk = findViewById(R.id.poleKwotaCalkowita);
+        EditText wlasny_napiwek = findViewById(R.id.poleWlasnyNapiwek);
+        EditText ilosc_osob = findViewById(R.id.poleIloscOsob);
+        TextView pokazZaplateNaOsobe = findViewById(R.id.pokazZaplateNaOsobe);
+        TextView pokazWynikNapiwek = findViewById(R.id.pokazWynikNapiwek);
+        TextView pokazWynikCalk = findViewById(R.id.pokazWynikCalk);
+        Spinner spinnerProcent = findViewById(R.id.procent_napiwku_spinner);
+        CheckBox zaokragliCheckBox = findViewById(R.id.zaokraglijCheckBox);
+
+        String tekstCeny = cena_calk.getText().toString();
+
+        if (tekstCeny.isEmpty()) {
+            Toast.makeText(this, "Niepoprawna kwota", Toast.LENGTH_SHORT).show();
+            pokazWynikNapiwek.setText("");
+            pokazWynikCalk.setText("");
+            return;
+        }
+
+        double kwota = Double.parseDouble(tekstCeny);
+
+        int procentKwoty = spinnerProcent.getSelectedItemPosition();
+        double napiwek = 0;
+        double calk_kwota = 0;
+        String wlasny_napiwek_string = wlasny_napiwek.getText().toString();
+
+        switch (procentKwoty) {
+            case 0:
+                wlasny_napiwek.setVisibility(View.GONE);
+                napiwek = kwota * 0.15;
+                break;
+            case 1:
+                wlasny_napiwek.setVisibility(View.GONE);
+                napiwek = kwota * 0.20;
+                break;
+            case 2:
+                wlasny_napiwek.setVisibility(View.GONE);
+                napiwek = kwota * 0.25;
+                break;
+            case 3:
+                wlasny_napiwek.setVisibility(View.VISIBLE);
+
+                if (wlasny_napiwek_string.isEmpty()) {
+                    napiwek = 0;
+                } else {
+                    double wlasny_napiwek_double = Double.parseDouble(wlasny_napiwek_string);
+                    napiwek = kwota * (wlasny_napiwek_double / 100.0);
+                }
+                break;
+
+        }
+
+        if (zaokragliCheckBox.isChecked()) {
+            napiwek = Math.ceil(napiwek);
+        }
+
+        calk_kwota = kwota + napiwek;
+
+        pokazWynikNapiwek.setText("Obecny napiwek to: " + String.format("%.2f", napiwek) + " zł");
+        pokazWynikCalk.setText("Całkowita cena z napiwkiem to: " + String.format("%.2f", calk_kwota) + " zł");
+
+        String cena_za_osobeTekst = ilosc_osob.getText().toString();
+        double cena_za_osobe = 0;
+
+        if (!cena_za_osobeTekst.isEmpty()) {
+            int cena_za_osobe_int = Integer.parseInt(cena_za_osobeTekst);
+            if (cena_za_osobe_int <= 0) {
+                Toast.makeText(this, "Niepoprawna ilość osób", Toast.LENGTH_SHORT).show();
+                pokazZaplateNaOsobe.setText("");
+                return;
+            }
+            cena_za_osobe = calk_kwota / cena_za_osobe_int;
+            pokazZaplateNaOsobe.setText("Cena za osobę wynosi: " + String.format("%.2f", cena_za_osobe) + " zł");
+        } else {
+            Toast.makeText(this, "Niepoprawna ilosc", Toast.LENGTH_SHORT).show();
+            pokazZaplateNaOsobe.setText("");
+            return;
+        }
+    }
+
+    // 🔹 TextWatcher do automatycznego wywołania obliczNapiwek()
+    private class SimpleTextWatcher implements android.text.TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            obliczNapiwek();
+        }
+        @Override
+        public void afterTextChanged(android.text.Editable s) {}
+    }
+}
+
+
+
+//strings.xml
+
+<resources>
+    <string name="app_name">kalkulator_napiwkow</string>
+    <string-array name="procent_napiwku_spinner">
+        <item>15%</item>
+        <item>20%</item>
+        <item>25%</item>
+        <item>Własny</item>
+    </string-array>
+</resources>
