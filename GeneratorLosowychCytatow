@@ -3,12 +3,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:orientation="vertical"
     android:gravity="center">
 
@@ -16,29 +14,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tekstCytatu"
-        android:textSize="20sp" />
+        android:textSize="25sp"
+        android:textStyle="italic"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tekstAutora"
         android:textSize="15sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:textColor="#5CFFDC"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/przyciskLosuj"
-        android:text="Losuj kolejny cytat"/>
+        android:text="Losuj cytat"
+        android:textColor="#D004AB"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/udostepnij"
+        android:text="Udostępnij"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ulubione"
+        android:text="Dodaj do ulubionych"/>
 
 </LinearLayout>
 
 
-
-
 //java
-
-package com.example.generatorcytatow;
 
 import android.os.Bundle;
 import android.widget.Button;
