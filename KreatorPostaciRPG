@@ -1,0 +1,90 @@
+main xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Podaj imie postaci:"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imie"/>
+
+        <!-- Pucie -->
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/pucMenska"
+                android:text="Puc Menska"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/pucDamska"
+                android:text="Puc Damska"/>
+
+        </RadioGroup>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:entries="@array/rasa"
+            android:id="@+id/rasa"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/umiejetnosci"/>
+
+    </LinearLayout>
+
+</ScrollView>
+
+strings.xml:
+
+    <string-array name="rasa">
+        <item>Krasnal</item>
+        <item>Rzeźnik</item>
+        <item>Czlowiek</item>
+        <item>Elf</item>
+    </string-array>
+
+postac.java:
+
+import java.util.ArrayList;
+
+public class Postac {
+    String imie;
+    String pucie;
+    String rasa;
+    ArrayList<String> umiejetnosci;
+
+    public Postac(String imie, String pucie, String rasa, ArrayList<String> umiejetnosci){
+        this.imie = imie;
+        this.pucie = pucie;
+        this.rasa = rasa;
+        this.umiejetnosci = umiejetnosci;
+    }
+}
+
+main.java:
+
+NIC NIE DOPISYWALEM
