@@ -33,13 +33,13 @@ main xml:
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/pucMenska"
-                android:text="Puc Menska"/>
+                android:text="Puć Menska"/>
 
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/pucDamska"
-                android:text="Puc Damska"/>
+                android:text="Puć Damska"/>
 
         </RadioGroup>
 
