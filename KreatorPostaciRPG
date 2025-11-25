@@ -145,14 +145,23 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // CheckBox wybór umiejętności
+        // CheckBox umiejętności
         CheckBox wlamywacz = findViewById(R.id.umiejetnosc1);
         CheckBox alchemia = findViewById(R.id.umiejetnosc2);
         CheckBox kowalstwo = findViewById(R.id.umiejetnosc3);
 
+        //RadioButton puc
+        RadioButton pucMenska = findViewById(R.id.pucMenska);
+        RadioButton pucDamska = findViewById(R.id.pucDamska);
+
+        //Spinner rasa
+        Spinner rasa = findViewById(R.id.rasa);
+
+        //EditText imie
+        EditText imie = findViewById(R.id.imie);
 
         wlamywacz.setOnClickListener(v -> {
-//            aktualizujUmiejetnosc();
+            //aktualizujUmiejetnosc();
             if(wlamywacz.isChecked()){
                 Toast.makeText(MainActivity.this, "Umiejętność Włamywacz została wybrana", Toast.LENGTH_SHORT).show();
             }else{
@@ -161,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         alchemia.setOnClickListener(v -> {
-//            aktualizujUmiejetnosc();
+            //aktualizujUmiejetnosc();
             if(alchemia.isChecked()){
                 Toast.makeText(MainActivity.this, "Umiejętność Alchemia została wybrana", Toast.LENGTH_SHORT).show();
             }else{
@@ -170,12 +179,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         kowalstwo.setOnClickListener(v -> {
-//            aktualizujUmiejetnosc();
+            //aktualizujUmiejetnosc();
             if(kowalstwo.isChecked()){
                 Toast.makeText(MainActivity.this, "Umiejętność Kowalstwo została wybrana", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(MainActivity.this, "Umiejętność Kowalstwo niezostała wybrana", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        // Obsługa wyboru puci
+        pucMenska.setOnClickListener(v -> {
+            //aktualizujUmiejetnosc();
+        });
+
+        pucDamska.setOnClickListener(v -> {
+            //aktualizujUmiejetnosc();
+        });
+
+        // Przycisk Resetuj
+        Button resetuj = findViewById(R.id.resetuj);
+        resetuj.setOnClickListener(v -> {
+            wlamywacz.setChecked(false);
+            alchemia.setChecked(false);
+            kowalstwo.setChecked(false);
+            pucMenska.setChecked(false);
+            pucDamska.setChecked(false);
+            imie.setText("");
         });
     }
 }
