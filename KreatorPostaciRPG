@@ -52,7 +52,32 @@ main xml:
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/umiejetnosci"/>
+            android:id="@+id/umiejetnosc1"
+            android:text="Włamywacz"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/umiejetnosc2"
+            android:text="Alchemia"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/umiejetnosc3"
+            android:text="Kowalstwo"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/stworzPostac"
+            android:text="Stwórz postać"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/resetuj"
+            android:text="Resetuj"/>
 
     </LinearLayout>
 
@@ -61,6 +86,7 @@ main xml:
 strings.xml:
 
     <string-array name="rasa">
+        <item>--Wybierz rase--</item>
         <item>Krasnal</item>
         <item>Rzeźnik</item>
         <item>Czlowiek</item>
@@ -87,4 +113,69 @@ public class Postac {
 
 main.java:
 
-NIC NIE DOPISYWALEM
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        // CheckBox wybór umiejętności
+        CheckBox wlamywacz = findViewById(R.id.umiejetnosc1);
+        CheckBox alchemia = findViewById(R.id.umiejetnosc2);
+        CheckBox kowalstwo = findViewById(R.id.umiejetnosc3);
+
+
+        wlamywacz.setOnClickListener(v -> {
+//            aktualizujUmiejetnosc();
+            if(wlamywacz.isChecked()){
+                Toast.makeText(MainActivity.this, "Umiejętność Włamywacz została wybrana", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this, "Umiejętność Włamywacz niezostała wybrana", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alchemia.setOnClickListener(v -> {
+//            aktualizujUmiejetnosc();
+            if(alchemia.isChecked()){
+                Toast.makeText(MainActivity.this, "Umiejętność Alchemia została wybrana", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this, "Umiejętność Alchemia niezostała wybrana", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        kowalstwo.setOnClickListener(v -> {
+//            aktualizujUmiejetnosc();
+            if(kowalstwo.isChecked()){
+                Toast.makeText(MainActivity.this, "Umiejętność Kowalstwo została wybrana", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this, "Umiejętność Kowalstwo niezostała wybrana", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
