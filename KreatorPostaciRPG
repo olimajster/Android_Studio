@@ -156,36 +156,65 @@ public class MainActivity extends AppCompatActivity {
 
         //Spinner rasa
         Spinner rasa = findViewById(R.id.rasa);
+        String wybranaRasa = rasa.getSelectedItem().toString();
 
         //EditText imie
         EditText imie = findViewById(R.id.imie);
 
+
         wlamywacz.setOnClickListener(v -> {
             //aktualizujUmiejetnosc();
-            if(wlamywacz.isChecked()){
-                Toast.makeText(MainActivity.this, "Umiejętność Włamywacz została wybrana", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(MainActivity.this, "Umiejętność Włamywacz niezostała wybrana", Toast.LENGTH_SHORT).show();
+            int zaznaczone = policzZaznaczone(wlamywacz, alchemia, kowalstwo);
+
+            // Próba wybrania 3 checkboxa
+            if (zaznaczone > 2) {
+                wlamywacz.setChecked(false);
+                Toast.makeText(this, "Możesz wybrać maksymalnie 2 umiejętności!", Toast.LENGTH_SHORT).show();
+                return; // ← Zatrzymujemy, żeby NIE pokazywać normalnego powiadomienia
+            }
+
+            // Normalne powiadomienie
+            if (wlamywacz.isChecked()) {
+                Toast.makeText(this, "Umiejętność Włamywacz została wybrana", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Umiejętność Włamywacz nie została wybrana", Toast.LENGTH_SHORT).show();
             }
         });
 
         alchemia.setOnClickListener(v -> {
             //aktualizujUmiejetnosc();
-            if(alchemia.isChecked()){
-                Toast.makeText(MainActivity.this, "Umiejętność Alchemia została wybrana", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(MainActivity.this, "Umiejętność Alchemia niezostała wybrana", Toast.LENGTH_SHORT).show();
+            int zaznaczone = policzZaznaczone(wlamywacz, alchemia, kowalstwo);
+
+            if (zaznaczone > 2) {
+                alchemia.setChecked(false);
+                Toast.makeText(this, "Możesz wybrać maksymalnie 2 umiejętności!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (alchemia.isChecked()) {
+                Toast.makeText(this, "Umiejętność Alchemia została wybrana", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Umiejętność Alchemia nie została wybrana", Toast.LENGTH_SHORT).show();
             }
         });
 
         kowalstwo.setOnClickListener(v -> {
             //aktualizujUmiejetnosc();
-            if(kowalstwo.isChecked()){
-                Toast.makeText(MainActivity.this, "Umiejętność Kowalstwo została wybrana", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(MainActivity.this, "Umiejętność Kowalstwo niezostała wybrana", Toast.LENGTH_SHORT).show();
+            int zaznaczone = policzZaznaczone(wlamywacz, alchemia, kowalstwo);
+
+            if (zaznaczone > 2) {
+                kowalstwo.setChecked(false);
+                Toast.makeText(this, "Możesz wybrać maksymalnie 2 umiejętności!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (kowalstwo.isChecked()) {
+                Toast.makeText(this, "Umiejętność Kowalstwo została wybrana", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Umiejętność Kowalstwo nie została wybrana", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         // Obsługa wyboru puci
         pucMenska.setOnClickListener(v -> {
@@ -196,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
             //aktualizujUmiejetnosc();
         });
 
+
         // Przycisk Resetuj
         Button resetuj = findViewById(R.id.resetuj);
         resetuj.setOnClickListener(v -> {
@@ -205,6 +235,69 @@ public class MainActivity extends AppCompatActivity {
             pucMenska.setChecked(false);
             pucDamska.setChecked(false);
             imie.setText("");
+
+            //Reset spinnera do wartości domyślnej
+            rasa.setSelection(0);
+        });
+
+
+        // Przycisk Stwórz postać
+        Button stworzPostac = findViewById(R.id.stworzPostac);
+        TextView wynik = findViewById(R.id.wynik);
+
+        stworzPostac.setOnClickListener(v -> {
+
+            //Pobieranie danych
+            String wpisaneImie = imie.getText().toString().trim();
+
+            // Walidacja imienia
+            if (wpisaneImie.isEmpty()) {
+                Toast.makeText(this, "Imię nie może być puste!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            // Pobranie płci
+            String pucie = "";
+            if (pucMenska.isChecked()) pucie = "Męska";
+            else if (pucDamska.isChecked()) pucie = "Damska";
+            else {
+                Toast.makeText(this, "Wybierz płeć!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //Pobieranie umiejętności
+            ArrayList<String> umiejetnosci = new ArrayList<>();
+
+            if (wlamywacz.isChecked()) umiejetnosci.add("Włamywacz");
+            if (alchemia.isChecked()) umiejetnosci.add("Alchemia");
+            if (kowalstwo.isChecked()) umiejetnosci.add("Kowalstwo");
+
+            //Utworzenie obiektu
+            Postac postac = new Postac(wpisaneImie, pucie, wybranaRasa, umiejetnosci);
+
+            //Generowanie podsumowania
+            StringBuilder sb = new StringBuilder();
+            sb.append("Podsumowanie postaci:\n\n");
+            sb.append("Imię: ").append(postac.imie).append("\n");
+            sb.append("Płeć: ").append(postac.pucie).append("\n");
+            sb.append("Rasa: ").append(postac.rasa).append("\n");
+            sb.append("Umiejętności: ");
+
+            if (postac.umiejetnosci.isEmpty()) {
+                sb.append("Brak");
+            } else {
+                sb.append(String.join(", ", postac.umiejetnosci));
+            }
+
+            wynik.setText(sb.toString());
         });
     }
-}
+
+    private int policzZaznaczone(CheckBox... boxes) {
+        int licznik = 0;
+        for (CheckBox box : boxes) {
+            if (box.isChecked()) licznik++;
+        }
+        return licznik;
+    }
