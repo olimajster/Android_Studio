@@ -1,0 +1,216 @@
+//xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/numerPytania"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/trescPytania"
+        android:padding="5dp"
+        android:text="Pytanie:"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/groupOdpowiedzi">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/odpowiedz1"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/odpowiedz2"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/odpowiedz3"/>
+
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sprawdz"
+        android:text="Sprawdź"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wynik"/>
+
+</LinearLayout>
+
+
+//main java
+
+package com.example.gemindt;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        numerPytania = findViewById(R.id.numerPytania);
+        trescPytania = findViewById(R.id.trescPytania);
+        groupOdpowiedzi = findViewById(R.id.groupOdpowiedzi);
+        odpowiedz1 = findViewById(R.id.odpowiedz1);
+        odpowiedz2 = findViewById(R.id.odpowiedz2);
+        odpowiedz3 = findViewById(R.id.odpowiedz3);
+        sprawdz = findViewById(R.id.sprawdz);
+        wynikText = findViewById(R.id.wynik);
+
+        przygotujPytanie();
+        wyswietlPytanie();
+
+        sprawdz.setOnClickListener(v -> sprawdzOdpowiedz());
+    }
+
+    ArrayList<Pytanie> listaPytan = new ArrayList<>();
+    int indeksPytania = 0;
+    int wynik = 0;
+
+    TextView numerPytania;
+    TextView trescPytania;
+    RadioGroup groupOdpowiedzi;
+    RadioButton odpowiedz1, odpowiedz2, odpowiedz3;
+    Button sprawdz;
+    TextView wynikText;
+
+    // Pytania
+    private void przygotujPytanie() {
+        ArrayList<String> o1 = new ArrayList<>();
+        o1.add("2");
+        o1.add("4");
+        o1.add("6");
+        listaPytan.add(new Pytanie("Ile to jest 2 + 2?", o1, 1));
+
+        ArrayList<String> o2 = new ArrayList<>();
+        o2.add("Warszawa");
+        o2.add("Berlin");
+        o2.add("Madryt");
+        listaPytan.add(new Pytanie("Stolicą Niemiec jest:", o2, 1));
+
+        ArrayList<String> o3 = new ArrayList<>();
+        o3.add("Ziemia");
+        o3.add("Mars");
+        o3.add("Jowisz");
+        listaPytan.add(new Pytanie("Największa planeta Układu Słonecznego:", o3, 2));
+    }
+
+    // Wyświetlanie pytania
+    private void wyswietlPytanie(){
+
+        groupOdpowiedzi.clearCheck();
+
+        Pytanie p = listaPytan.get(indeksPytania);
+
+        numerPytania.setText("Pytanie " + (indeksPytania + 1) + "/" + listaPytan.size());
+        trescPytania.setText(p.tresc);
+
+        odpowiedz1.setText(p.odpowiedzi.get(0));
+        odpowiedz2.setText(p.odpowiedzi.get(1));
+        odpowiedz3.setText(p.odpowiedzi.get(2));
+    }
+
+    // Logika sprawdzania odpowiedzi
+    private void sprawdzOdpowiedz(){
+
+        int zaznaczoneId = groupOdpowiedzi.getCheckedRadioButtonId();
+
+        if(zaznaczoneId == -1){
+            Toast.makeText(this, "Zaznacz odpowiedź!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int indexWybranej = groupOdpowiedzi.indexOfChild(findViewById(zaznaczoneId));
+        int poprawna = listaPytan.get(indeksPytania).indeksPoprawnej;
+
+        if(indexWybranej == poprawna){
+            wynik++;
+            Toast.makeText(this, "Poprawna odpowiedź!", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "Błędna odpowiedź.", Toast.LENGTH_SHORT).show();
+        }
+
+        indeksPytania++;
+
+        if(indeksPytania < listaPytan.size()){
+            wyswietlPytanie();
+        }else{
+            wyswietlWynikKoncowy();
+        }
+    }
+
+    // Ekran końcowy
+    private void wyswietlWynikKoncowy(){
+        groupOdpowiedzi.setVisibility(View.GONE);
+        sprawdz.setVisibility(View.GONE);
+
+        trescPytania.setText("Koniec quizu!\nTwój wynik: " + wynik + " / " + listaPytan.size());
+        numerPytania.setText("");
+    }
+}
+
+
+//postac java
+
+package com.example.gemindt;
+
+import java.util.ArrayList;
+
+public class Pytanie {
+    String tresc;
+    ArrayList<String> odpowiedzi;
+    int indeksPoprawnej;
+
+    public Pytanie(String tresc, ArrayList<String> odpowiedzi, int indeksPoprawnej) {
+        this.tresc = tresc;
+        this.odpowiedzi = odpowiedzi;
+        this.indeksPoprawnej = indeksPoprawnej;
+    }
+}
