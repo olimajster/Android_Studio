@@ -1,0 +1,329 @@
+xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/Sekcja"
+            android:text="Imię:" />
+
+        <EditText
+            android:id="@+id/etImie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/Sekcja"
+            android:text="Płeć:" />
+
+        <RadioGroup
+            android:id="@+id/rgPlec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                style="@style/RB"
+                android:text="Mężczyzna" />
+
+            <RadioButton
+                style="@style/RB"
+                android:text="Kobieta" />
+        </RadioGroup>
+
+        <TextView
+            style="@style/Sekcja"
+            android:text="Rasa:" />
+
+        <Spinner
+            android:id="@+id/spRasa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/Sekcja"
+            android:text="Umiejętności:" />
+
+        <CheckBox
+            android:id="@+id/cbWalka"
+            style="@style/CB"
+            android:text="Walka" />
+
+        <CheckBox
+            android:id="@+id/cbMagia"
+            style="@style/CB"
+            android:text="Magia" />
+
+        <CheckBox
+            android:id="@+id/cbKradziez"
+            style="@style/CB"
+            android:text="Kradzież" />
+
+        <Button
+            android:id="@+id/btnStworz"
+            style="@style/GlowneBtn"
+            android:text="Stwórz postać" />
+
+        <Button
+            android:id="@+id/btnReset"
+            style="@style/GlowneBtn"
+            android:text="Resetuj" />
+
+        <TextView
+            android:id="@+id/tvDruzyna"
+            android:text="Aktualna wielkość drużyny: 0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp" />
+
+        <TextView
+            android:id="@+id/tvWynik"
+            android:text=""
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"/>
+    </LinearLayout>
+
+</ScrollView>
+
+
+
+java:
+
+package com.example.kreatorpostaci;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText etImie;
+    private RadioGroup rgPlec;
+    private Spinner spRasa;
+
+    private CheckBox cbWalka, cbMagia, cbKradziez;
+    private Button btnStworz, btnReset;
+    private TextView tvWynik, tvDruzyna;
+
+    private ArrayList<Postac> druzyna = new ArrayList<>();
+    private int maxUmiejetnosci = 2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        etImie = findViewById(R.id.etImie);
+        rgPlec = findViewById(R.id.rgPlec);
+        spRasa = findViewById(R.id.spRasa);
+
+        cbWalka = findViewById(R.id.cbWalka);
+        cbMagia = findViewById(R.id.cbMagia);
+        cbKradziez = findViewById(R.id.cbKradziez);
+
+        btnStworz = findViewById(R.id.btnStworz);
+        btnReset = findViewById(R.id.btnReset);
+
+        tvWynik = findViewById(R.id.tvWynik);
+        tvDruzyna = findViewById(R.id.tvDruzyna);
+
+        // Spinner
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.rasy_array,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRasa.setAdapter(adapter);
+
+        // limit 2 umiejętności
+        View.OnClickListener limiter = v -> {
+            int zaznaczone =
+                    (cbWalka.isChecked() ? 1 : 0) +
+                            (cbMagia.isChecked() ? 1 : 0) +
+                            (cbKradziez.isChecked() ? 1 : 0);
+
+            if (zaznaczone > maxUmiejetnosci) {
+                ((CheckBox)v).setChecked(false);
+                Toast.makeText(this, "Możesz wybrać maksymalnie 2 umiejętności!", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        cbWalka.setOnClickListener(limiter);
+        cbMagia.setOnClickListener(limiter);
+        cbKradziez.setOnClickListener(limiter);
+
+        btnStworz.setOnClickListener(v -> stworzPostac());
+        btnReset.setOnClickListener(v -> resetuj());
+    }
+
+    private void stworzPostac() {
+        String imie = etImie.getText().toString();
+        if (imie.isEmpty()) {
+            etImie.setError("Podaj imię");
+            return;
+        }
+
+        int plecId = rgPlec.getCheckedRadioButtonId();
+        if (plecId == -1) {
+            Toast.makeText(this, "Wybierz płeć", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        RadioButton rb = findViewById(plecId);
+        String plec = rb.getText().toString();
+
+        String rasa = spRasa.getSelectedItem().toString();
+
+        ArrayList<String> um = new ArrayList<>();
+        if (cbWalka.isChecked()) um.add("Walka");
+        if (cbMagia.isChecked()) um.add("Magia");
+        if (cbKradziez.isChecked()) um.add("Kradzież");
+
+        Postac p = new Postac(imie, plec, rasa, um);
+        tvWynik.setText(p.generujPodsumowanie());
+
+        druzyna.add(p);
+        tvDruzyna.setText("Aktualna wielkość drużyny: " + druzyna.size());
+    }
+
+    private void resetuj() {
+        etImie.setText("");
+        rgPlec.clearCheck();
+        spRasa.setSelection(0);
+
+        cbWalka.setChecked(false);
+        cbMagia.setChecked(false);
+        cbKradziez.setChecked(false);
+
+        tvWynik.setText("");
+    }
+}
+
+
+
+
+postac.java:
+
+package com.example.kreatorpostaci;
+
+import java.util.ArrayList;
+
+public class Postac {
+
+    private String imie;
+    private String plec;
+    private String rasa;
+    private ArrayList<String> umiejetnosci;
+    private int sila;
+    private int zrecznosc;
+
+    public Postac(String imie, String plec, String rasa, ArrayList<String> umiejetnosci) {
+        this.imie = imie;
+        this.plec = plec;
+        this.rasa = rasa;
+        this.umiejetnosci = umiejetnosci;
+
+        ustawBonusy();
+    }
+
+    private void ustawBonusy() {
+        switch (rasa) {
+            case "Krasnolud":
+                sila = 12;
+                zrecznosc = 8;
+                break;
+            case "Elf":
+                sila = 8;
+                zrecznosc = 12;
+                break;
+            case "Ork":
+                sila = 13;
+                zrecznosc = 7;
+                break;
+            case "Człowiek":
+            default:
+                sila = 10;
+                zrecznosc = 10;
+                break;
+        }
+    }
+
+    public String generujPodsumowanie() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Imię: ").append(imie).append("\n");
+        sb.append("Płeć: ").append(plec).append("\n");
+        sb.append("Rasa: ").append(rasa).append("\n");
+        sb.append("Statystyki:\n");
+        sb.append("• Siła: ").append(sila).append("\n");
+        sb.append("• Zręczność: ").append(zrecznosc).append("\n");
+        sb.append("Umiejętności:\n");
+        if (umiejetnosci.isEmpty()) sb.append("Brak\n");
+        else {
+            for (String u : umiejetnosci) sb.append("• ").append(u).append("\n");
+        }
+        return sb.toString();
+    }
+}
+
+
+
+
+strings:
+
+<resources>
+    <string name="app_name">KreatorPostaci</string>
+
+    <string-array name="rasy_array">
+        <item>Człowiek</item>
+        <item>Elf</item>
+        <item>Krasnolud</item>
+        <item>Ork</item>
+    </string-array>
+</resources>
+
+
+
+
+themes:
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Kreatorpostaci" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.Kreatorpostaci" parent="Base.Theme.Kreatorpostaci" />
+
+    <style name="Sekcja">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">16dp</item>
+    </style>
+
+    <style name="RB">
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="CB">
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="GlowneBtn">
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+</resources>
