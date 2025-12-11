@@ -19,13 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/trescPytania"
-        android:padding="5dp"
-        android:text="Pytanie:"/>
+        android:text="Pytanie:"
+        style="@style/quizPytanie"/>
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/groupOdpowiedzi">
+        android:id="@+id/groupOdpowiedzi"
+        style="@style/quizOdpowiedz">
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -48,12 +49,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sprawdz"
-        android:text="Sprawdź"/>
+        android:text="Sprawdź"
+        style="@style/quizPrzycisk"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/zagrajPonownie"
+        android:text="Zagraj ponownie"
+        android:visibility="gone"
+        style="@style/quizPrzycisk"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/wynik"/>
+        android:id="@+id/wynik"
+        style="@style/quizWynik"/>
 
 </LinearLayout>
 
@@ -103,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         odpowiedz3 = findViewById(R.id.odpowiedz3);
         sprawdz = findViewById(R.id.sprawdz);
         wynikText = findViewById(R.id.wynik);
+        zagrajPonownie = findViewById(R.id.zagrajPonownie);
 
         przygotujPytanie();
         wyswietlPytanie();
@@ -118,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     TextView trescPytania;
     RadioGroup groupOdpowiedzi;
     RadioButton odpowiedz1, odpowiedz2, odpowiedz3;
-    Button sprawdz;
+    Button sprawdz, zagrajPonownie;
     TextView wynikText;
 
     // Pytania
@@ -144,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Wyświetlanie pytania
     private void wyswietlPytanie(){
-
         groupOdpowiedzi.clearCheck();
 
         Pytanie p = listaPytan.get(indeksPytania);
@@ -155,11 +166,18 @@ public class MainActivity extends AppCompatActivity {
         odpowiedz1.setText(p.odpowiedzi.get(0));
         odpowiedz2.setText(p.odpowiedzi.get(1));
         odpowiedz3.setText(p.odpowiedzi.get(2));
+
+        // Zmiana tekstu przycisku na ostatnim pytaniu
+        if (indeksPytania == listaPytan.size() - 1) {
+            sprawdz.setText("Zakończ quiz");
+        } else {
+            sprawdz.setText("Następne pytanie");
+        }
     }
 
     // Logika sprawdzania odpowiedzi
-    private void sprawdzOdpowiedz(){
-
+    private void sprawdzOdpowiedz() {
+        zablokujOdpowiedzi(true);
         int zaznaczoneId = groupOdpowiedzi.getCheckedRadioButtonId();
 
         if(zaznaczoneId == -1){
@@ -170,20 +188,28 @@ public class MainActivity extends AppCompatActivity {
         int indexWybranej = groupOdpowiedzi.indexOfChild(findViewById(zaznaczoneId));
         int poprawna = listaPytan.get(indeksPytania).indeksPoprawnej;
 
+        // ustawienie kolorów
         if(indexWybranej == poprawna){
+            findViewById(zaznaczoneId).setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
             wynik++;
-            Toast.makeText(this, "Poprawna odpowiedź!", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "Błędna odpowiedź.", Toast.LENGTH_SHORT).show();
+        } else {
+            findViewById(zaznaczoneId).setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            findViewById(groupOdpowiedzi.getChildAt(poprawna).getId())
+                    .setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
         }
 
-        indeksPytania++;
-
-        if(indeksPytania < listaPytan.size()){
-            wyswietlPytanie();
-        }else{
-            wyswietlWynikKoncowy();
-        }
+        // opóźnienie przed przejściem do następnego pytania
+        new android.os.Handler().postDelayed(() -> {
+            indeksPytania++;
+            if(indeksPytania < listaPytan.size()){
+                findViewById(zaznaczoneId).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                findViewById(groupOdpowiedzi.getChildAt(poprawna).getId()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                zablokujOdpowiedzi(false);
+                wyswietlPytanie();
+            } else {
+                wyswietlWynikKoncowy();
+            }
+        }, 1000); // 1 sekunda
     }
 
     // Ekran końcowy
@@ -193,6 +219,29 @@ public class MainActivity extends AppCompatActivity {
 
         trescPytania.setText("Koniec quizu!\nTwój wynik: " + wynik + " / " + listaPytan.size());
         numerPytania.setText("");
+
+        zagrajPonownie.setVisibility(View.VISIBLE);
+
+        zagrajPonownie.setOnClickListener(v -> {
+            int zaznaczoneId = groupOdpowiedzi.getCheckedRadioButtonId();
+            wynik = 0;
+            indeksPytania = 0;
+
+            groupOdpowiedzi.setVisibility(View.VISIBLE);
+            sprawdz.setVisibility(View.VISIBLE);
+            zagrajPonownie.setVisibility(View.GONE);
+            findViewById(zaznaczoneId).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            for (int i = 0; i < groupOdpowiedzi.getChildCount(); i++) {
+                groupOdpowiedzi.getChildAt(i).setEnabled(true);
+            }
+            wyswietlPytanie();
+        });
+    }
+
+    private void zablokujOdpowiedzi(boolean czyZablokowac){
+        for (int i = 0; i < groupOdpowiedzi.getChildCount(); i++) {
+            groupOdpowiedzi.getChildAt(i).setEnabled(!czyZablokowac);
+        }
     }
 }
 
@@ -206,11 +255,48 @@ import java.util.ArrayList;
 public class Pytanie {
     String tresc;
     ArrayList<String> odpowiedzi;
-    int indeksPoprawnej;
+    int indeksPoprawnej; // dla pojedynczego wyboru
+    boolean czyWielokrotnyWybor = false; // nowe pole
+    ArrayList<Integer> poprawneOdp = new ArrayList<>(); // dla wielokrotnego wyboru
 
+    // konstruktor dla pojedynczego wyboru
     public Pytanie(String tresc, ArrayList<String> odpowiedzi, int indeksPoprawnej) {
         this.tresc = tresc;
         this.odpowiedzi = odpowiedzi;
         this.indeksPoprawnej = indeksPoprawnej;
+        this.czyWielokrotnyWybor = false;
+        this.poprawneOdp.add(indeksPoprawnej);
+    }
+
+    // konstruktor dla wielokrotnego wyboru
+    public Pytanie(String tresc, ArrayList<String> odpowiedzi, ArrayList<Integer> poprawneOdp) {
+        this.tresc = tresc;
+        this.odpowiedzi = odpowiedzi;
+        this.czyWielokrotnyWybor = true;
+        this.poprawneOdp = new ArrayList<>(poprawneOdp);
     }
 }
+
+//themes xml
+
+    <style name="quizPytanie">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="quizOdpowiedz">
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">6dp</item>
+    </style>
+
+    <style name="quizPrzycisk">
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="quizWynik">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
