@@ -16,29 +16,73 @@ main xml:
         android:layout_height="wrap_content"
         android:text="Ekran główny"
         style="@style/pierwszyEkran"
-        android:textColor="@color/black"/>
+        android:textColor="#000000"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioGroup">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opcjaA"
+            android:text="Opcja A"
+            android:textColor="#000000"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opcjaB"
+            android:text="Opcja B"
+            android:textColor="#000000"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opcjaC"
+            android:text="Opcja C"
+            android:textColor="#000000"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opcjaD"
+            android:text="Opcja D"
+            android:textColor="#000000"/>
+
+    </RadioGroup>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/second"
-        android:text="przejdz do second"/>
+        android:onClick="swap"
+        android:text="Przejdź do następnego widoku"/>
 
 </LinearLayout>
 
 main java:
 
-package com.example.gemindt;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,15 +96,30 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button second = findViewById(R.id.second);
-        second.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-            startActivity(intent);
-        });
+    }
+
+    public void swap(View view){
+        RadioGroup group = findViewById(R.id.radioGroup);
+
+        int selectedId = group.getCheckedRadioButtonId();
+
+        if (selectedId == R.id.opcjaA) {
+            Intent intentA = new Intent(MainActivity.this, opcjaA.class);
+            startActivity(intentA);
+        } else if (selectedId == R.id.opcjaB) {
+            Intent intentB = new Intent(MainActivity.this, opcjaB.class);
+            startActivity(intentB);
+        } else if (selectedId == R.id.opcjaC) {
+            Intent intentC = new Intent(MainActivity.this, opcjaC.class);
+            startActivity(intentC);
+        } else if (selectedId == R.id.opcjaD) {
+            Intent intentD = new Intent(MainActivity.this, opcjaD.class);
+            startActivity(intentD);
+        }
     }
 }
 
-second xml:
+opcja A(second) xml:
 
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
@@ -76,9 +135,9 @@ second xml:
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Witaj w drugim widoku"
+        android:text="Opcja A"
         style="@style/drugiWidok"
-        android:textColor="@color/black"/>
+        android:textColor="#000000"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -89,17 +148,24 @@ second xml:
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dalej"
-        android:text="dalej"/>
+        android:text="Wroć do ekranu głównego"/>
 
 </LinearLayout>
 
-second java:
-
-package com.example.gemindt;
+opcja A java:
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -107,7 +173,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class SecondActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class opcjaA extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,13 +189,13 @@ public class SecondActivity extends AppCompatActivity {
         });
         Button dalej = findViewById(R.id.dalej);
         dalej.setOnClickListener(v -> {
-            Intent intent = new Intent(SecondActivity.this, ThActivity.class);
+            Intent intent = new Intent(opcjaA.this, MainActivity.class);
             startActivity(intent);
         });
     }
 }
 
-(3)th xml:
+opcja B(3th) xml:
 
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
@@ -143,25 +211,35 @@ public class SecondActivity extends AppCompatActivity {
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Witaj w trzecim widoku"
+        android:text="Opcja B"
         style="@style/trzeciWidok"
-        android:textColor="@color/black"/>
+        android:textColor="#000000"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/najman"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/trzeci"
-        android:text="Wroc do ekranu glownego"/>
+        android:text="Wroć do ekranu głównego"/>
 
 </LinearLayout>
 
-(3)th java:
-
-package com.example.gemindt;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -169,7 +247,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class ThActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class opcjaB extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +263,163 @@ public class ThActivity extends AppCompatActivity {
         });
         Button second = findViewById(R.id.trzeci);
         second.setOnClickListener(v -> {
-            Intent intent = new Intent(ThActivity.this, MainActivity.class);
+            Intent intent = new Intent(opcjaB.this, MainActivity.class);
+            startActivity(intent);
+        });
+    }
+}
+
+opcja C xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#ffddff">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Opcja C"
+        style="@style/drugiWidok"
+        android:textColor="#000000"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/jasper"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dalej"
+        android:text="Wroć do ekranu głównego"/>
+
+</LinearLayout>
+
+opcja C java:
+
+package com.example.gemindt;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class opcjaC extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_opcja_c);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        Button dalej = findViewById(R.id.dalej);
+        dalej.setOnClickListener(v -> {
+            Intent intent = new Intent(opcjaC.this, MainActivity.class);
+            startActivity(intent);
+        });
+    }
+}
+
+opcja D xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#ffddff">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Opcja D"
+        style="@style/drugiWidok"
+        android:textColor="#000000"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rose"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dalej"
+        android:text="Wroć do ekranu głównego"/>
+
+</LinearLayout>
+
+opcja D java:
+
+package com.example.gemindt;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class opcjaD extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_opcja_d);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        Button dalej = findViewById(R.id.dalej);
+        dalej.setOnClickListener(v -> {
+            Intent intent = new Intent(opcjaD.this, MainActivity.class);
             startActivity(intent);
         });
     }
@@ -201,4 +437,4 @@ theme xml:
 
     <style name="trzeciWidok">
         <item name="android:textSize">25dp</item>
-    </style>
+    </style
