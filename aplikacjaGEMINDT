@@ -1,0 +1,92 @@
+main xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gemin DT"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/przyciskStrony"
+        android:text="Odwiedź naszą strone"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/przyciskTelefon"
+        android:text="Zadzwoń do nas"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/przyciskUdostepnij"
+        android:text="Udostępnij wizytówke"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/przyciskMapa"
+        android:text="Pokaż mapę"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/przyciskWyslijEmail"
+        android:text="Napisz do nas e-mail"/>
+
+</LinearLayout>
+
+
+main java:
+
+        Button strona = findViewById(R.id.przyciskStrony);
+        Button telefon = findViewById(R.id.przyciskTelefon);
+        Button udostepnij = findViewById(R.id.przyciskUdostepnij);
+        Button mapa = findViewById(R.id.przyciskMapa);
+        Button email = findViewById(R.id.przyciskWyslijEmail);
+
+        strona.setOnClickListener(v -> {
+            String url = "https://www.facebook.com/p/GEMIN-DT-Dariusz-Topczewski-Us%C5%82ugi-Ksi%C4%99gowe-Kierunek-Dania-100054634741220/?locale=pl_PL";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        });
+
+        telefon.setOnClickListener(v -> {
+            String numerTelefonu = "123456789";
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + numerTelefonu));
+            startActivity(intent);
+        });
+
+        udostepnij.setOnClickListener(v -> {
+            String tekstDoWyslania = "Sprawdź tę firmę: GEMIN DT Dariusz Topczewski";
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, tekstDoWyslania);
+
+            Intent chooser = Intent.createChooser(intent, "Udostępnij przez...");
+            startActivity(chooser);
+        });
+
+        mapa.setOnClickListener(v -> {
+            String url = "https://maps.app.goo.gl/ZD48GRCcNqs8ZRiH7";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        });
+
+        email.setOnClickListener(v -> {
+
+        });
