@@ -102,6 +102,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -109,12 +110,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final ArrayList<Wydatek> listaWydatkow = new ArrayList<>();
     private EditText poleNazwaWydatku;
     private EditText poleKwotaWydatku;
     private Spinner spinnerKategoria;
+    private WydatekAdapter adapter;
+    private TextView tekstPodsumowanie;
+    private TextView tekstPustaLista;
+    private RecyclerView listaRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,4 +207,79 @@ public class Wydatek {
     public String getKategoria() {
         return kategoria;
     }
+
+
+wydatek adapter:
+
+package com.example.gemindt;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+public class WydatekAdapter extends RecyclerView.Adapter<WydatekAdapter.WydatekViewHolder> {
+
+    public interface OnWydatekActionListener {
+        void onDeleteClicked(int position);
+        void onItemClicked(Wydatek wydatek);
+    }
+
+    private final ArrayList<Wydatek> listaWydatkow;
+    private final OnWydatekActionListener listener;
+
+    public WydatekAdapter(ArrayList<Wydatek> listaWydatkow, OnWydatekActionListener listener) {
+        this.listaWydatkow = listaWydatkow;
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public WydatekViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wydatek, parent, false);
+        return new WydatekViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull WydatekViewHolder holder, int position) {
+        Wydatek wydatek = listaWydatkow.get(position);
+
+        // TODO: ustaw dane na widokach holdera
+        // TODO: dodaj obsługę kliknięcia elementu i przycisku usuwania
+    }
+
+    @Override
+    public int getItemCount() {
+        return listaWydatkow.size();
+    }
+
+    public void dodajWydatek(Wydatek wydatek) {
+        // TODO: dodaj element do listy i powiadom adapter
+    }
+
+    public void usunWydatek(int position) {
+        // TODO: bezpiecznie usuń element i odśwież listę
+    }
+
+    public static class WydatekViewHolder extends RecyclerView.ViewHolder {
+        TextView tekstNazwa;
+        TextView tekstKategoria;
+        TextView tekstKwota;
+        Button przyciskUsun;
+
+        public WydatekViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tekstNazwa = itemView.findViewById(R.id.tekstNazwa);
+            tekstKategoria = itemView.findViewById(R.id.tekstKategoria);
+            tekstKwota = itemView.findViewById(R.id.tekstKwota);
+            przyciskUsun = itemView.findViewById(R.id.przyciskUsun);
+        }
+    }
+}
 }
