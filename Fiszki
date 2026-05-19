@@ -1,0 +1,268 @@
+main xml:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/sekcjakreatora"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editTextPytanie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Wpisz pytanie" />
+
+        <EditText
+            android:id="@+id/editTextOdpowiedz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Wpisz odpowiedź" />
+
+        <Button
+            android:id="@+id/buttonAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dodaj fiszkę" />
+
+        <Button
+            android:id="@+id/zacznijQuizz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ZACZNIJ QUIZ"
+            android:enabled="false"/>
+
+        <ListView
+            android:id="@+id/listVievFlashcards"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sekcjaQuizzu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pytanie"
+            android:text="Putanie..."/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/odpowiedz"
+            android:hint="Odpowiedź..."/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SPRAWDŹ ODPOWIEDŹ"
+            android:id="@+id/btnCheckAns"
+            android:textStyle="bold"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ZAKOŃCZ QUIZ"
+            android:id="@+id/zakoczQuizz"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+main java:
+
+package com.example.gemindt;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class MainActivity extends AppCompatActivity {
+
+    LinearLayout sekcjakreatora;
+    LinearLayout sekcjaQuizzu;
+    TextView pytanie;
+    EditText editTextPytanie;
+    EditText editTextOdpowiedz;
+    EditText odpowiedz;
+    Button buttonAdd;
+    Button zacznijQuizz;
+    Button zakoczQuizz;
+    Button btnCheckAns;
+    ListView listVievFlashcards;
+    ArrayList<fiszki> flashcards;
+    ArrayList<fiszki> dostepneFlashcardy;
+    ArrayAdapter<fiszki> adapter;
+    fiszki currentFlashcard;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        editTextPytanie = findViewById(R.id.editTextPytanie);
+        editTextOdpowiedz = findViewById(R.id.editTextOdpowiedz);
+        buttonAdd = findViewById(R.id.buttonAdd);
+        listVievFlashcards = findViewById(R.id.listVievFlashcards);
+        zacznijQuizz = findViewById(R.id.zacznijQuizz);
+        zakoczQuizz = findViewById(R.id.zakoczQuizz);
+        btnCheckAns = findViewById(R.id.btnCheckAns);
+        sekcjakreatora = findViewById(R.id.sekcjakreatora);
+        sekcjaQuizzu = findViewById(R.id.sekcjaQuizzu);
+        pytanie = findViewById(R.id.pytanie);
+        odpowiedz = findViewById(R.id.odpowiedz);
+
+        flashcards = new ArrayList<>();
+
+        adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                flashcards
+        );
+
+        listVievFlashcards.setAdapter(adapter);
+
+        zacznijQuizz.setOnClickListener(v -> {
+            if(flashcards.isEmpty()){
+                Toast.makeText(this, "Najpierw dodaj fiszki", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            sekcjakreatora.setVisibility(View.GONE);
+            sekcjaQuizzu.setVisibility(View.VISIBLE);
+
+            dostepneFlashcardy = new ArrayList<>(flashcards);
+            nastepnePytanie();
+        });
+
+        zakoczQuizz.setOnClickListener(v -> {
+            sekcjakreatora.setVisibility(View.VISIBLE);
+            sekcjaQuizzu.setVisibility(View.GONE);
+        });
+
+        btnCheckAns.setOnClickListener(v -> {
+            if(currentFlashcard == null) return;
+
+            String wpisanie = odpowiedz.getText().toString();
+            String poprawne = currentFlashcard.getAnswer();
+
+            boolean czyPoprawne = wpisanie.equalsIgnoreCase(poprawne);
+
+            if(czyPoprawne == true){
+                Toast.makeText(this, "Poprawna odpowiedz", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(this,"Zla odpowiedz", Toast.LENGTH_SHORT).show();
+            }
+            nastepnePytanie();
+        });
+
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                String pytanie = editTextPytanie.getText().toString();
+                String odpowiedz = editTextOdpowiedz.getText().toString();
+
+                if(pytanie.isEmpty() || odpowiedz.isEmpty()){
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Uzupelnij wszystkie pola",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    return;
+                }
+
+                fiszki flashcard = new fiszki(pytanie, odpowiedz);
+
+                flashcards.add(flashcard);
+                adapter.notifyDataSetChanged();
+
+                zacznijQuizz.setEnabled(true);
+
+                editTextPytanie.setText("");
+                editTextOdpowiedz.setText("");
+            }
+        });
+    }
+
+    private void nastepnePytanie(){
+        if(dostepneFlashcardy == null || dostepneFlashcardy.isEmpty()){
+            Toast.makeText(this,"Koniec fiszki", Toast.LENGTH_SHORT).show();
+            sekcjaQuizzu.setVisibility(View.GONE);
+            sekcjakreatora.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        Random generujPytanie = new Random();
+        int losowyInt = generujPytanie.nextInt(dostepneFlashcardy.size());
+        currentFlashcard = dostepneFlashcardy.get(losowyInt);
+        pytanie.setText("Pytanie: " + currentFlashcard.getQuestion() + "?");
+        odpowiedz.setText("");
+        dostepneFlashcardy.remove(losowyInt);
+    }
+}
+
+
+fiszki.java;
+
+package com.example.gemindt;
+
+public class fiszki {
+        private String question;
+        private String answer;
+
+        public fiszki(String question, String answer) {
+            this.question = question;
+            this.answer = answer;
+        }
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        @Override
+        public String toString() {
+            return "Pytanie: " + question + "? | Odp: " + answer;
+        }
+}
